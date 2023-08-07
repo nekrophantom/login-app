@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:login_app/providers/auth_provider.dart';
 import 'package:login_app/routes/app_routes.dart';
-import 'package:login_app/services/auth_service.dart';
 
 
 class AppDrawer extends ConsumerWidget {
@@ -13,9 +13,6 @@ class AppDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-  final authProvider       = StateProvider<AuthService>((ref) {
-    return AuthService();
-  });
   final authService = ref.watch(authProvider);
     
     

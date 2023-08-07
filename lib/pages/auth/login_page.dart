@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:login_app/providers/auth_provider.dart';
 import 'package:login_app/routes/app_routes.dart';
-import 'package:login_app/services/auth_service.dart';
 
 class LoginPage extends ConsumerWidget {
   
@@ -15,11 +15,7 @@ class LoginPage extends ConsumerWidget {
   final formKey            = GlobalKey<FormState>();
   final emailController    = TextEditingController();
   final passwordController = TextEditingController();
-  final authProvider       = StateProvider<AuthService>((ref) {
-    return AuthService();
-  });
   final authService = ref.watch(authProvider);
-    // final authService = context.read(authServiceProvider);
 
     return Scaffold(
       body: SafeArea(
