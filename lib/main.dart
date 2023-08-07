@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:login_app/providers/auth_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:login_app/routes/app_routes.dart';
-import 'package:login_app/services/auth_service.dart';
-import 'package:provider/provider.dart';
 
 
 Future <void> main() async {
@@ -18,18 +16,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthProvider(authService: AuthService()), 
-        ),
-        
-      ],
+    return ProviderScope(
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(),
-        initialRoute: AppRoutes.login,
-        routes: AppRoutes.routes,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.dark(),
+          initialRoute: AppRoutes.login,
+          routes: AppRoutes.routes,
       ),
     );
   }

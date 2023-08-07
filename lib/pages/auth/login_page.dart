@@ -1,23 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:login_app/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
+// ignore_for_file: use_build_context_synchronously
 
-class LoginPage extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:login_app/routes/app_routes.dart';
+import 'package:login_app/services/auth_service.dart';
+
+class LoginPage extends ConsumerWidget {
+  
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
 
-class _LoginPageState extends State<LoginPage> {
-  final _formKey            = GlobalKey<FormState>();
-  final _emailController    = TextEditingController();
-  final _passwordController = TextEditingController();
-
-
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+  final formKey            = GlobalKey<FormState>();
+  final emailController    = TextEditingController();
+  final passwordController = TextEditingController();
+  final authProvider       = StateProvider<AuthService>((ref) {
+    return AuthService();
+  });
+  final authService = ref.watch(authProvider);
+    // final authService = context.read(authServiceProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -35,13 +37,13 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                 padding: const EdgeInsets.all(25),
                 child: Form(
-                  key: _formKey,
+                  key: formKey,
                   child: Column(
                     children: [
                       
                       // Email Input
                       TextFormField(
-                        controller: _emailController,
+                        controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           label: Text('Email'),
@@ -60,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
 
                       // Password Input
                       TextFormField(
-                        controller: _passwordController,
+                        controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           label: Text('Password'),
@@ -94,21 +96,26 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 50,
                         width: double.infinity,
-                        child: Expanded(
-                          child: ElevatedButton(
-                          onPressed: () {
-                              final email = _emailController.text;
-                              final password = _passwordController.text;
+                        child: ElevatedButton(
+                        onPressed: () async {
+                            final response = await authService.login(emailController.text, passwordController.text);
 
-                              authProvider.login(email, password);
-                            }, 
-                            child: const Text(
-                              'Sign in',
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
-                            )
-                          ),
+                            if (response) {
+                              Navigator.of(context).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Login Failed')
+                                )
+                              );
+                            }
+                          }, 
+                          child: const Text(
+                            'Sign in',
+                            style: TextStyle(
+                              fontSize: 16
+                            ),
+                          )
                         ),
                       )
 
